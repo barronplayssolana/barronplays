@@ -254,27 +254,27 @@
             }
         }
 
-        function generateObstacle() {
-            const rand = Math.random();
-            let obstacleType;
-            if (rand < 0.375) { // 37.5% chance for 'ill' (25% less than before)
-                obstacleType = 'ill';
-            } else if (rand < 0.5) { // 12.5% chance for 'bap' (50% less than before)
-                obstacleType = 'bap';
-            } else {
-                return; // 50% chance to not generate an obstacle
-            }
+function generateObstacle() {
+    const rand = Math.random();
+    let obstacleType;
+    if (rand < 0.1875) { // 18.75% chance for 'ill' (50% less than before)
+        obstacleType = 'ill';
+    } else if (rand < 0.25) { // 6.25% chance for 'bap' (50% less than before)
+        obstacleType = 'bap';
+    } else {
+        return; // 75% chance to not generate an obstacle
+    }
 
-            const obstacleSize = obstacleType === 'ill' ? 60 : 120;
-            obstacles.push({
-                x: Math.random() * (canvas.width - obstacleSize),
-                y: Math.random() * (canvas.height - obstacleSize),
-                width: obstacleSize,
-                height: obstacleSize,
-                createdAt: Date.now(),
-                type: obstacleType
-            });
-        }
+    const obstacleSize = obstacleType === 'ill' ? 60 : 120;
+    obstacles.push({
+        x: Math.random() * (canvas.width - obstacleSize),
+        y: Math.random() * (canvas.height - obstacleSize),
+        width: obstacleSize,
+        height: obstacleSize,
+        createdAt: Date.now(),
+        type: obstacleType
+    });
+}
 
         function updateGame() {
             if (gameOver) {
