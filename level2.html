@@ -255,7 +255,16 @@
         }
 
         function generateObstacle() {
-            const obstacleType = Math.random() < 0.5 ? 'ill' : 'bap';
+            const rand = Math.random();
+            let obstacleType;
+            if (rand < 0.375) { // 37.5% chance for 'ill' (25% less than before)
+                obstacleType = 'ill';
+            } else if (rand < 0.5) { // 12.5% chance for 'bap' (50% less than before)
+                obstacleType = 'bap';
+            } else {
+                return; // 50% chance to not generate an obstacle
+            }
+
             const obstacleSize = obstacleType === 'ill' ? 60 : 120;
             obstacles.push({
                 x: Math.random() * (canvas.width - obstacleSize),
@@ -415,7 +424,7 @@
             const text = 'YOU WON! Now you are ready to know the truth';
             const textMetrics = ctx.measureText(text);
             const textWidth = textMetrics.width;
-            ctx.fillText(text, (canvas.width - textWidth) / 2, canvas.height / 2);
+   ctx.fillText(text, (canvas.width - textWidth) / 2, canvas.height / 2);
 
             setTimeout(() => {
                 displayVideo();
@@ -429,7 +438,7 @@
 
             // Load the YouTube API script
             const tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
+            tag.src = "https://www.youtube.com/iframe_api";
             const firstScriptTag = document.getElementsByTagName('script')[0];
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
@@ -486,7 +495,7 @@ tag.src = "https://www.youtube.com/iframe_api";
             loadAudio();
             backgroundMusic.play().catch(e => console.log("Audio play failed:", e));
             setInterval(generateBook, 1000);
-            setInterval(generateObstacle, 2000);  // Changed from 3000 to 2000 to make obstacles appear 50% more often
+            setInterval(generateObstacle, 1000);  // Generate obstacle every second, but with reduced probabilities
             gameLoopId = requestAnimationFrame(gameLoop);
         }
 
