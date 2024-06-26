@@ -135,7 +135,7 @@
     <div id="fullest-text">Play the game to the fullest</div>
     <div class="game-container">
         <button id="startButton">Start Game</button>
-        <canvas id="gameCanvas" width="600" height="400"></canvas>
+        <canvas id="gameCanvas" width="600" height="600"></canvas>
         <div class="game-text">Use Arrow Keys or On-Screen Buttons To Play</div>
         
         <div id="controls">
@@ -159,7 +159,7 @@
         const ctx = canvas.getContext('2d');
         const startButton = document.getElementById('startButton');
         const level2Link = document.getElementById('level2-link');
-        let guy = { x: 300, y: 200, width: 60, height: 80, rotation: 0 };
+        let guy = { x: 300, y: 300, width: 60, height: 80, rotation: 0 };
         let books = [];
         let obstacles = [];
         let score = 0;
@@ -199,7 +199,7 @@
         backgroundImage.src = 'wash.jpg';
 
         function loadAudio() {
-            backgroundMusic = new Audio('1.mp3');
+            backgroundMusic = new Audio('2.mp3');
             backgroundMusic.loop = true;
         }
 
@@ -237,9 +237,9 @@
 
         function drawObstacle(obstacle) {
             if (obstacle.type === 'ill') {
-                ctx.drawImage(illImage, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+                ctx.drawImage(illImage, obstacle.x, obstacle.y, 60, 60);
             } else if (obstacle.type === 'bap') {
-                ctx.drawImage(bapImage, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+                ctx.drawImage(bapImage, obstacle.x, obstacle.y, 60, 60);
             }
         }
 
@@ -257,10 +257,10 @@
         function generateObstacle() {
             const obstacleType = Math.random() < 0.5 ? 'ill' : 'bap';
             obstacles.push({
-                x: Math.random() * (canvas.width - 30),
-                y: Math.random() * (canvas.height - 30),
-                width: 30,
-                height: 30,
+                x: Math.random() * (canvas.width - 60),
+                y: Math.random() * (canvas.height - 60),
+                width: 60,
+                height: 60,
                 createdAt: Date.now(),
                 type: obstacleType
             });
@@ -352,7 +352,7 @@
         }
 
         function resetGame() {
-            guy = { x: 300, y: 200, width: 60, height: 80, rotation: 0 };
+            guy = { x: 300, y: 300, width: 60, height: 80, rotation: 0 };
             books = [];
             obstacles = [];
             score = 0;
@@ -389,7 +389,7 @@
         function displayMilestoneImage(imageNumber) {
             milestoneDisplayed = true;
             const milestoneImage = document.getElementById('milestone-image');
-            milestoneImage.src = `image${imageNumber}.jpg`;
+            milestoneImage.src = `image1${imageNumber}.jpg`;
             milestoneImage.style.display = 'block';
 
             setTimeout(() => {
@@ -426,7 +426,7 @@
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
             // This function will be called when the YouTube API is ready
-window.onYouTubeIframeAPIReady = function() {
+  window.onYouTubeIframeAPIReady = function() {
                 youtubePlayer = new YT.Player('youtubePlayer', {
                     height: '80%',
                     width: '80%',
@@ -499,10 +499,10 @@ window.onYouTubeIframeAPIReady = function() {
             if (containerWidth < 600) {
                 const scale = containerWidth / 600;
                 canvas.style.width = `${containerWidth}px`;
-                canvas.style.height = `${400 * scale}px`;
+                canvas.style.height = `${600 * scale}px`;
             } else {
                 canvas.style.width = '600px';
-                canvas.style.height = '400px';
+                canvas.style.height = '600px';
             }
         }
 
