@@ -63,6 +63,11 @@
     </style>
 </head>
 <body>
+    <audio id="backgroundMusic" loop>
+        <source src="1.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <div class="game-text">Play The Game To Your Fullest To Reveal Knowledge</div>
     <canvas id="gameCanvas" width="600" height="400"></canvas>
     <div class="game-text">Use Arrow Keys or On-Screen Buttons To Play</div>
@@ -90,13 +95,29 @@
         let milestoneDisplayed = false;
         let isSpinning = false;
         let spinStartTime = 0;
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        let youtubePlayer;
 
         // Load images
         const barronImage = new Image();
-        barronImage.src = 'barron.png';
         const autImage = new Image();
-        autImage.src = 'aut.png';
         const backgroundImage = new Image();
+        let imagesLoaded = 0;
+        const totalImages = 3;
+
+        function imageLoaded() {
+            imagesLoaded++;
+            if (imagesLoaded === totalImages) {
+                startGame();
+            }
+        }
+
+        barronImage.onload = imageLoaded;
+        autImage.onload = imageLoaded;
+        backgroundImage.onload = imageLoaded;
+
+        barronImage.src = 'barron.png';
+        autImage.src = 'aut.png';
         backgroundImage.src = 'white_house.png';
 
         function loadStoredData() {
@@ -115,24 +136,14 @@
         }
 
         function drawBackground() {
-            if (backgroundImage.complete) {
-                ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-            } else {
-                ctx.fillStyle = 'lightgray';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            }
+            ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
         }
 
         function drawGuy() {
             ctx.save();
             ctx.translate(guy.x + guy.width / 2, guy.y + guy.height / 2);
             ctx.rotate(guy.rotation);
-            if (barronImage.complete) {
-                ctx.drawImage(barronImage, -guy.width / 2, -guy.height / 2, guy.width, guy.height);
-            } else {
-                ctx.fillStyle = 'blue';
-                ctx.fillRect(-guy.width / 2, -guy.height / 2, guy.width, guy.height);
-            }
+            ctx.drawImage(barronImage, -guy.width / 2, -guy.height / 2, guy.width, guy.height);
             ctx.restore();
         }
 
@@ -143,12 +154,7 @@
         }
 
         function drawObstacle(obstacle) {
-            if (autImage.complete) {
-                ctx.drawImage(autImage, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-            } else {
-                ctx.fillStyle = 'red';
-                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-            }
+            ctx.drawImage(autImage, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
         }
 
         function generateDollar() {
@@ -322,8 +328,42 @@
 
         function displayVideo() {
             const videoContainer = document.getElementById('video-container');
-            videoContainer.innerHTML = '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/IsN4wdfVXMk" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+            videoContainer.innerHTML = '<div id="youtubePlayer"></div>';
             videoContainer.style.display = 'block';
+
+            // Load the YouTube API script
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+            // This function will be called when the YouTube API is ready
+            window.onYouTubeIframeAPIReady = function() {
+                youtubePlayer = new YT.Player('youtubePlayer', {
+                    height: '100%',
+                    width: '100%',
+                    videoId: 'IsN4wdfVXMk',
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            };
+
+            // This function will be called when the player is ready
+            function onPlayerReady(event) {
+                // Stop the background music when the video is ready to play
+                backgroundMusic.pause();
+                backgroundMusic.currentTime = 0;
+            }
+
+            // This function will be called when the player's state changes
+            function onPlayerStateChange(event) {
+                if (event.data == YT.PlayerState.ENDED) {
+                    // Optionally restart the background music when the video ends
+                    backgroundMusic.play();
+                }
+            }
         }
 
         document.addEventListener('keydown', (e) => {
@@ -368,6 +408,7 @@
         }, { passive: false });
 
         function startGame() {
+            backgroundMusic.play();
             setInterval(generateDollar, 1000);
             setInterval(generateObstacle, 3000);
             gameLoop();
@@ -378,9 +419,10 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // Load data and start the game
+        // Load data
         loadStoredData();
-        startGame();
+
+        // The game will start automatically when all images are loaded
     </script>
 </body>
 </html>
