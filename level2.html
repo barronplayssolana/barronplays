@@ -239,7 +239,7 @@
             if (obstacle.type === 'ill') {
                 ctx.drawImage(illImage, obstacle.x, obstacle.y, 60, 60);
             } else if (obstacle.type === 'bap') {
-                ctx.drawImage(bapImage, obstacle.x, obstacle.y, 60, 60);
+                ctx.drawImage(bapImage, obstacle.x, obstacle.y, 120, 120);
             }
         }
 
@@ -256,11 +256,12 @@
 
         function generateObstacle() {
             const obstacleType = Math.random() < 0.5 ? 'ill' : 'bap';
+            const obstacleSize = obstacleType === 'ill' ? 60 : 120;
             obstacles.push({
-                x: Math.random() * (canvas.width - 60),
-                y: Math.random() * (canvas.height - 60),
-                width: 60,
-                height: 60,
+                x: Math.random() * (canvas.width - obstacleSize),
+                y: Math.random() * (canvas.height - obstacleSize),
+                width: obstacleSize,
+                height: obstacleSize,
                 createdAt: Date.now(),
                 type: obstacleType
             });
@@ -426,7 +427,7 @@
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
             // This function will be called when the YouTube API is ready
-  window.onYouTubeIframeAPIReady = function() {
+window.onYouTubeIframeAPIReady = function() {
                 youtubePlayer = new YT.Player('youtubePlayer', {
                     height: '80%',
                     width: '80%',
