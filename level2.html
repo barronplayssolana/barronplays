@@ -128,23 +128,11 @@
             font-weight: bold;
             margin-bottom: 10px;
         }
-        .footer-links {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .footer-links a {
-            margin: 0 10px;
-            color: #3498db;
-            text-decoration: none;
-        }
-        .footer-links a:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
     <h1>Barron Plays Solana</h1>
-    <div id="fullest-text">Play the game to the fullest or remain lost</div>
+    <div id="fullest-text">Play the game to the fullest</div>
     <div class="game-container">
         <button id="startButton">Start Game</button>
         <canvas id="gameCanvas" width="600" height="400"></canvas>
@@ -158,16 +146,10 @@
         </div>
     </div>
 
-    <div class="footer-links">
-        <p>CA:</p>
-        <a href="https://twitter.com/YourTwitterHandle" target="_blank">Twitter</a>
-        <a href="https://t.me/YourTelegramGroup" target="_blank">Telegram</a>
-    </div>
-
     <img id="milestone-image" src="" alt="Milestone Image">
     <div id="video-container">
         <div id="video-content">
-            <a href="level2.html" id="level2-link">Level 2</a>
+            <a href="level3.html" id="level2-link">Level 3</a>
             <div id="youtubePlayer"></div>
         </div>
     </div>
@@ -178,7 +160,7 @@
         const startButton = document.getElementById('startButton');
         const level2Link = document.getElementById('level2-link');
         let guy = { x: 300, y: 200, width: 60, height: 80, rotation: 0 };
-        let dollars = [];
+        let books = [];
         let obstacles = [];
         let score = 0;
         let highScore = 0;
@@ -193,10 +175,11 @@
 
         // Load images
         const barronImage = new Image();
-        const autImage = new Image();
+        const illImage = new Image();
+        const bapImage = new Image();
         const backgroundImage = new Image();
         let imagesLoaded = 0;
-        const totalImages = 3;
+        const totalImages = 4;
 
         function imageLoaded() {
             imagesLoaded++;
@@ -206,12 +189,14 @@
         }
 
         barronImage.onload = imageLoaded;
-        autImage.onload = imageLoaded;
+        illImage.onload = imageLoaded;
+        bapImage.onload = imageLoaded;
         backgroundImage.onload = imageLoaded;
 
         barronImage.src = 'barron.png';
-        autImage.src = 'aut.png';
-        backgroundImage.src = 'white_house.png';
+        illImage.src = 'ill.png';
+        bapImage.src = 'bap.png';
+        backgroundImage.src = 'wash.jpg';
 
         function loadAudio() {
             backgroundMusic = new Audio('1.mp3');
@@ -245,19 +230,22 @@
             ctx.restore();
         }
 
-        function drawDollar(dollar) {
-            ctx.fillStyle = 'green';
+        function drawBook(book) {
             ctx.font = '40px Arial';
-            ctx.fillText('$', dollar.x, dollar.y);
+            ctx.fillText('📚', book.x, book.y);
         }
 
         function drawObstacle(obstacle) {
-            ctx.drawImage(autImage, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            if (obstacle.type === 'ill') {
+                ctx.drawImage(illImage, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            } else if (obstacle.type === 'bap') {
+                ctx.drawImage(bapImage, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            }
         }
 
-        function generateDollar() {
+        function generateBook() {
             for (let i = 0; i < 2; i++) {
-                dollars.push({
+                books.push({
                     x: Math.random() * (canvas.width - 40),
                     y: Math.random() * (canvas.height - 40),
                     width: 40,
@@ -267,12 +255,14 @@
         }
 
         function generateObstacle() {
+            const obstacleType = Math.random() < 0.5 ? 'ill' : 'bap';
             obstacles.push({
                 x: Math.random() * (canvas.width - 30),
                 y: Math.random() * (canvas.height - 30),
                 width: 30,
                 height: 30,
-                createdAt: Date.now()
+                createdAt: Date.now(),
+                type: obstacleType
             });
         }
 
@@ -305,10 +295,10 @@
             
             drawGuy();
 
-            dollars.forEach((dollar, index) => {
-                drawDollar(dollar);
-                if (checkCollision(guy, dollar)) {
-                    dollars.splice(index, 1);
+            books.forEach((book, index) => {
+                drawBook(book);
+                if (checkCollision(guy, book)) {
+                    books.splice(index, 1);
                     score++;
                     if (score > highScore) {
                         highScore = score;
@@ -355,7 +345,7 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'white';
             ctx.font = '24px Arial';
-            const text = 'Oh snap! You caught the autism!';
+            const text = 'GAME OVER';
             const textMetrics = ctx.measureText(text);
             const textWidth = textMetrics.width;
             ctx.fillText(text, (canvas.width - textWidth) / 2, canvas.height / 2);
@@ -363,7 +353,7 @@
 
         function resetGame() {
             guy = { x: 300, y: 200, width: 60, height: 80, rotation: 0 };
-            dollars = [];
+            books = [];
             obstacles = [];
             score = 0;
             gameOver = false;
@@ -433,14 +423,14 @@
             const tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
             const firstScriptTag = document.getElementsByTagName('script')[0];
-         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
             // This function will be called when the YouTube API is ready
-            window.onYouTubeIframeAPIReady = function() {
+window.onYouTubeIframeAPIReady = function() {
                 youtubePlayer = new YT.Player('youtubePlayer', {
                     height: '80%',
                     width: '80%',
-                    videoId: 'IsN4wdfVXMk',
+                    videoId: '7Eeo-82Eac8',
                     events: {
                         'onReady': onPlayerReady,
                         'onStateChange': onPlayerStateChange
@@ -487,7 +477,7 @@
             startButton.style.display = 'none';
             loadAudio();
             backgroundMusic.play().catch(e => console.log("Audio play failed:", e));
-            setInterval(generateDollar, 1000);
+            setInterval(generateBook, 1000);
             setInterval(generateObstacle, 3000);
             gameLoopId = requestAnimationFrame(gameLoop);
         }
