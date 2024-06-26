@@ -241,6 +241,15 @@
             } else if (obstacle.type === 'bap') {
                 ctx.drawImage(bapImage, obstacle.x, obstacle.y, 120, 120);
             }
+            
+            // Draw a fading outline for the first second
+            const timeSinceCreation = Date.now() - obstacle.createdAt;
+            if (timeSinceCreation < 1000) {
+                const alpha = 1 - (timeSinceCreation / 1000);
+                ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+                ctx.lineWidth = 3;
+                ctx.strokeRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            }
         }
 
         function generateBook() {
@@ -254,27 +263,27 @@
             }
         }
 
-function generateObstacle() {
-    const rand = Math.random();
-    let obstacleType;
-    if (rand < 0.1875) { // 18.75% chance for 'ill' (50% less than before)
-        obstacleType = 'ill';
-    } else if (rand < 0.25) { // 6.25% chance for 'bap' (50% less than before)
-        obstacleType = 'bap';
-    } else {
-        return; // 75% chance to not generate an obstacle
-    }
+        function generateObstacle() {
+            const rand = Math.random();
+            let obstacleType;
+            if (rand < 0.1875) { // 18.75% chance for 'ill'
+                obstacleType = 'ill';
+            } else if (rand < 0.25) { // 6.25% chance for 'bap'
+                obstacleType = 'bap';
+            } else {
+                return; // 75% chance to not generate an obstacle
+            }
 
-    const obstacleSize = obstacleType === 'ill' ? 60 : 120;
-    obstacles.push({
-        x: Math.random() * (canvas.width - obstacleSize),
-        y: Math.random() * (canvas.height - obstacleSize),
-        width: obstacleSize,
-        height: obstacleSize,
-        createdAt: Date.now(),
-        type: obstacleType
-    });
-}
+            const obstacleSize = obstacleType === 'ill' ? 60 : 120;
+            obstacles.push({
+                x: Math.random() * (canvas.width - obstacleSize),
+                y: Math.random() * (canvas.height - obstacleSize),
+                width: obstacleSize,
+                height: obstacleSize,
+                createdAt: Date.now(),
+                type: obstacleType
+            });
+        }
 
         function updateGame() {
             if (gameOver) {
@@ -322,7 +331,7 @@ function generateObstacle() {
             obstacles = obstacles.filter(obstacle => {
                 if (currentTime - obstacle.createdAt < 10000) {
                     drawObstacle(obstacle);
-                    if (checkCollision(guy, obstacle)) {
+                    if (checkCollision(guy, obstacle) && currentTime - obstacle.createdAt >= 1000) {
                         gameOver = true;
                         gameOverTime = Date.now();
                         displayGameOver();
@@ -417,6 +426,9 @@ function generateObstacle() {
 
         function displayWinMessage() {
             milestoneDisplayed = true;
+            ctx.fillStyle
+function displayWinMessage() {
+            milestoneDisplayed = true;
             ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'white';
@@ -424,7 +436,7 @@ function generateObstacle() {
             const text = 'YOU WON! Now you are ready to know the truth';
             const textMetrics = ctx.measureText(text);
             const textWidth = textMetrics.width;
-   ctx.fillText(text, (canvas.width - textWidth) / 2, canvas.height / 2);
+            ctx.fillText(text, (canvas.width - textWidth) / 2, canvas.height / 2);
 
             setTimeout(() => {
                 displayVideo();
@@ -528,3 +540,4 @@ function generateObstacle() {
     </script>
 </body>
 </html>
+
