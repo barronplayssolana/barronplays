@@ -434,6 +434,14 @@
             gameLoop();
         }
 
-        function gameLoop() {
+function gameLoop() {
             updateGame();
-            requestAnimationFrame(gameLoop
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Load data and start the game
+        loadStoredData();
+        startGame();
+    </script>
+</body>
+</html>
