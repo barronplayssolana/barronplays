@@ -121,13 +121,25 @@
         }
         #level2-link {
             display: none;
-            margin-top: 20px;
+            margin-bottom: 20px;
             padding: 10px 20px;
             background-color: #2ecc71;
             color: white;
             text-decoration: none;
             border-radius: 5px;
             font-weight: bold;
+        }
+        .footer-links {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .footer-links a {
+            margin: 0 10px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .footer-links a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -145,6 +157,12 @@
             <button id="right" class="arrow">→</button>
             <button id="down" class="arrow">↓</button>
         </div>
+    </div>
+
+    <div class="footer-links">
+        <p>CA:</p>
+        <a href="https://twitter.com/YourTwitterHandle" target="_blank">Twitter</a>
+        <a href="https://t.me/YourTelegramGroup" target="_blank">Telegram</a>
     </div>
 
     <a href="level2.html" id="level2-link">Level 2</a>
@@ -419,7 +437,7 @@
             const firstScriptTag = document.getElementsByTagName('script')[0];
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-            // This function will be called when the YouTube API is ready
+// This function will be called when the YouTube API is ready
             window.onYouTubeIframeAPIReady = function() {
                 youtubePlayer = new YT.Player('youtubePlayer', {
                     height: '80%',
@@ -436,8 +454,8 @@
             function onPlayerReady(event) {
                 // Stop the background music when the video is ready to play
                 backgroundMusic.pause();
-                backgroundMusic.currentTime = 0
-};
+                backgroundMusic.currentTime = 0;
+            }
 
             // This function will be called when the player's state changes
             function onPlayerStateChange(event) {
@@ -505,3 +523,4 @@
     </script>
 </body>
 </html>
+
