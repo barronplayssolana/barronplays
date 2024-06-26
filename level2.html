@@ -278,7 +278,7 @@
             obstacles.push({
                 x: Math.random() * (canvas.width - obstacleSize),
                 y: Math.random() * (canvas.height - obstacleSize),
-                width: obstacleSize,
+width: obstacleSize,
                 height: obstacleSize,
                 createdAt: Date.now(),
                 type: obstacleType
@@ -426,9 +426,6 @@
 
         function displayWinMessage() {
             milestoneDisplayed = true;
-            ctx.fillStyle
-function displayWinMessage() {
-            milestoneDisplayed = true;
             ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'white';
@@ -540,4 +537,3 @@ function displayWinMessage() {
     </script>
 </body>
 </html>
-
