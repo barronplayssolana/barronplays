@@ -13,7 +13,7 @@
             padding: 20px;
             background-color: #f0f0f0;
         }
-        h1 {
+        h1, h2 {
             color: #4a4a4a;
             text-align: center;
         }
@@ -55,7 +55,7 @@
             background-color: #e8e8e8;
             border-radius: 5px;
         }
-        #timer {
+        #timer, #highScore {
             font-size: 24px;
             font-weight: bold;
             text-align: center;
@@ -67,6 +67,7 @@
     <div class="game-container">
         <h1>🌟 SOLANA TRADER PRO 🌟</h1>
         <div id="timer">Time left: 60s</div>
+        <div id="highScore">High Score: $10,000</div>
         <div class="market-info">
             <div>
                 <h3>Current SOL Price:</h3>
@@ -98,11 +99,14 @@
         let timeLeft = 60;
         let priceHistory = [price];
         let chart;
+        let highScore = 10000;
+        const initialBalance = 10000;
 
         function updateDisplay() {
             document.getElementById('price').innerText = '$' + price.toFixed(2);
             document.getElementById('balance').innerText = '$' + balance.toFixed(2);
             document.getElementById('holdings').innerText = holdings;
+            document.getElementById('highScore').innerText = 'High Score: $' + highScore.toFixed(2);
             updateChart();
         }
 
@@ -111,7 +115,6 @@
                 holdings++;
                 balance -= price;
                 updateDisplay();
-                checkGameStatus();
             } else {
                 alert("Not enough funds to buy!");
             }
@@ -122,7 +125,6 @@
                 holdings--;
                 balance += price;
                 updateDisplay();
-                checkGameStatus();
             } else {
                 alert("No SOL to sell!");
             }
@@ -136,19 +138,31 @@
             updateDisplay();
             document.getElementById('newsContent').innerText = change > 0 ? 
                 "Solana sees a surge in demand!" : "Solana faces selling pressure.";
-            checkGameStatus();
         }
 
-        function checkGameStatus() {
-            let totalValue = balance + (holdings * price);
-            if (totalValue < 5000) {
-                endGame("Game Over! You've lost too much money.");
-            } else if (totalValue > 20000) {
-                endGame("Congratulations! You've doubled your money and won the game!");
+        function endGame() {
+            // Sell all remaining SOL
+            balance += holdings * price;
+            holdings = 0;
+
+            let finalBalance = balance;
+            let message = "";
+
+            if (finalBalance > initialBalance) {
+                message = "You Won! ";
+            } else if (finalBalance < initialBalance) {
+                message = "You Lost! ";
+            } else {
+                message = "It's a tie! ";
             }
-        }
 
-        function endGame(message) {
+            message += `Your final balance is $${finalBalance.toFixed(2)}.`;
+
+            if (finalBalance > highScore) {
+                highScore = finalBalance;
+                message += " New High Score!";
+            }
+
             alert(message);
             resetGame();
         }
@@ -169,7 +183,7 @@
                 document.getElementById('timer').innerText = `Time left: ${timeLeft}s`;
                 if (timeLeft <= 0) {
                     clearInterval(timer);
-                    endGame("Time's up! Let's see how you did.");
+                    endGame();
                 }
             }, 1000);
         }
