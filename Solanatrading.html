@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Trader Pro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #4a4a4a;
+            text-align: center;
+        }
+        .game-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .market-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .market-info div {
+            flex: 1;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            margin: 0 5px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #news {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e8e8e8;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🌟 SOLANA TRADER PRO 🌟</h1>
+        <div class="market-info">
+            <div>
+                <h3>Current SOL Price:</h3>
+                <p id="price">$22.15</p>
+            </div>
+            <div>
+                <h3>Your Balance:</h3>
+                <p id="balance">$10,000.00</p>
+            </div>
+            <div>
+                <h3>SOL Holdings:</h3>
+                <p id="holdings">0</p>
+            </div>
+        </div>
+        <button onclick="buy()">Buy SOL</button>
+        <button onclick="sell()">Sell SOL</button>
+        <button onclick="updateMarket()">Refresh Market</button>
+        <div id="news">
+            <h3>Market News:</h3>
+            <p id="newsContent">Welcome to Solana Trader Pro! Stay tuned for market updates.</p>
+        </div>
+    </div>
+
+    <script>
+        let price = 22.15;
+        let balance = 10000;
+        let holdings = 0;
+
+        function updateDisplay() {
+            document.getElementById('price').innerText = '$' + price.toFixed(2);
+            document.getElementById('balance').innerText = '$' + balance.toFixed(2);
+            document.getElementById('holdings').innerText = holdings;
+        }
+
+        function buy() {
+            if (balance >= price) {
+                holdings++;
+                balance -= price;
+                updateDisplay();
+                checkGameStatus();
+            } else {
+                alert("Not enough funds to buy!");
+            }
+        }
+
+        function sell() {
+            if (holdings > 0) {
+                holdings--;
+                balance += price;
+                updateDisplay();
+                checkGameStatus();
+            } else {
+                alert("No SOL to sell!");
+            }
+        }
+
+        function updateMarket() {
+            let change = (Math.random() - 0.5) * 2;
+            price += change;
+            if (price < 1) price = 1;
+            updateDisplay();
+            document.getElementById('newsContent').innerText = change > 0 ? 
+                "Solana sees a surge in demand!" : "Solana faces selling pressure.";
+            checkGameStatus();
+        }
+
+        function checkGameStatus() {
+            let totalValue = balance + (holdings * price);
+            if (totalValue < 5000) {
+                alert("Game Over! You've lost too much money.");
+                resetGame();
+            } else if (totalValue > 20000) {
+                alert("Congratulations! You've doubled your money and won the game!");
+                resetGame();
+            }
+        }
+
+        function resetGame() {
+            price = 22.15;
+            balance = 10000;
+            holdings = 0;
+            updateDisplay();
+        }
+
+        updateDisplay();
+    </script>
+</body>
+</html>
