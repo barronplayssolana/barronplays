@@ -233,7 +233,7 @@
         }
 
         function drawObstacle(obstacle) {
-            ctx.drawImage(demImage, obstacle.x, obstacle.y, 300, 300);
+            ctx.drawImage(demImage, obstacle.x, obstacle.y, 100, 100);
             
             // Draw a fading outline for the first second
             const timeSinceCreation = Date.now() - obstacle.createdAt;
