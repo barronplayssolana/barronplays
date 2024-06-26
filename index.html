@@ -13,32 +13,36 @@
             font-family: 'Roboto', sans-serif;
             background-color: #f0f0f0;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             min-height: 100vh;
         }
         .game-container {
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-top: 20px;
+            padding: 10px;
+            margin-top: 10px;
             text-align: center;
+            max-width: 100%;
+            box-sizing: border-box;
         }
         h1 {
-            color: #2c3e50;
+            color: #3498db;
             text-align: center;
-            margin-bottom: 20px;
-            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-size: 2em;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
         canvas {
             border: 1px solid #ddd;
             border-radius: 5px;
             display: none;
+            max-width: 100%;
+            height: auto;
         }
         .game-text {
-            margin: 15px 0;
-            font-size: 18px;
+            margin: 10px 0;
+            font-size: 16px;
             text-align: center;
             color: #34495e;
         }
@@ -46,16 +50,16 @@
             display: none;
             grid-template-columns: repeat(3, 1fr);
             gap: 5px;
-            margin-top: 20px;
+            margin-top: 10px;
             justify-content: center;
-            width: 160px;
+            width: 120px;
             margin-left: auto;
             margin-right: auto;
         }
         .arrow, #startButton {
-            width: 50px;
-            height: 50px;
-            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -76,11 +80,11 @@
         #startButton {
             width: auto;
             padding: 10px 20px;
-            margin: 20px auto;
-            font-size: 18px;
+            margin: 10px auto;
+            font-size: 16px;
         }
         #milestone-image {
-            position: absolute;
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -109,6 +113,22 @@
             max-width: 90%;
             max-height: 90%;
         }
+        #fullest-text {
+            color: red;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        #level2-link {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #2ecc71;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -127,12 +147,17 @@
     </div>
 
     <img id="milestone-image" src="" alt="Milestone Image">
-    <div id="video-container"></div>
+    <div id="video-container">
+        <div id="fullest-text">Play the game to the fullest</div>
+        <div id="youtubePlayer"></div>
+    </div>
+    <a href="level2.html" id="level2-link">Level 2</a>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const startButton = document.getElementById('startButton');
+        const level2Link = document.getElementById('level2-link');
         let guy = { x: 300, y: 200, width: 60, height: 80, rotation: 0 };
         let dollars = [];
         let obstacles = [];
@@ -382,7 +407,6 @@
 
         function displayVideo() {
             const videoContainer = document.getElementById('video-container');
-            videoContainer.innerHTML = '<div id="youtubePlayer"></div>';
             videoContainer.style.display = 'block';
 
             // Load the YouTube API script
@@ -394,8 +418,8 @@
             // This function will be called when the YouTube API is ready
             window.onYouTubeIframeAPIReady = function() {
                 youtubePlayer = new YT.Player('youtubePlayer', {
-                    height: '100%',
-                    width: '100%',
+                    height: '80%',
+                    width: '80%',
                     videoId: 'IsN4wdfVXMk',
                     events: {
                         'onReady': onPlayerReady,
@@ -411,9 +435,11 @@
                 backgroundMusic.currentTime = 0;
             }
 
-            // This function will be called when the player's state changes
+  // This function will be called when the player's state changes
             function onPlayerStateChange(event) {
                 if (event.data == YT.PlayerState.ENDED) {
+                    // Show the Level 2 link when the video ends
+                    level2Link.style.display = 'inline-block';
                     // Optionally restart the background music when the video ends
                     backgroundMusic.play();
                 }
@@ -429,8 +455,7 @@
             }
         });
 
-
-// Add click events for on-screen controls
+        // Add click events for on-screen controls
         const controls = document.getElementById('controls');
         controls.addEventListener('click', (e) => {
             if (e.target.classList.contains('arrow')) {
@@ -458,6 +483,23 @@
         loadStoredData();
         startButton.addEventListener('click', startGame);
         startButton.disabled = true; // Disable button until images are loaded
+
+        // Adjust canvas size for mobile
+        function resizeCanvas() {
+            const container = document.querySelector('.game-container');
+            const containerWidth = container.clientWidth;
+            if (containerWidth < 600) {
+                const scale = containerWidth / 600;
+                canvas.style.width = `${containerWidth}px`;
+                canvas.style.height = `${400 * scale}px`;
+            } else {
+                canvas.style.width = '600px';
+                canvas.style.height = '400px';
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas(); // Call once to set initial size
     </script>
 </body>
 </html>
