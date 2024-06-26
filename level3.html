@@ -235,15 +235,16 @@
         function drawObstacle(obstacle) {
             ctx.drawImage(demImage, obstacle.x, obstacle.y, 100, 100);
             
-            // Draw a fading outline for the first second
-            const timeSinceCreation = Date.now() - obstacle.createdAt;
-            if (timeSinceCreation < 1000) {
-                const alpha = 1 - (timeSinceCreation / 1000);
-                ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-                ctx.lineWidth = 3;
-                ctx.strokeRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-            }
-        }
+           // Draw a fading outline for the first second
+    const timeSinceCreation = Date.now() - obstacle.createdAt;
+    if (timeSinceCreation < 1000) {
+        const alpha = 1 - (timeSinceCreation / 1000);
+        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+    }
+}
+
 
         function generateBook() {
             for (let i = 0; i < 2; i++) {
@@ -256,20 +257,19 @@
             }
         }
 
-        function generateObstacle() {
-            if (Math.random() < 0.3125) { // 31.25% chance to generate an obstacle (5 times more often)
-                const obstacleSize = 300;
-                obstacles.push({
-                    x: Math.random() * (canvas.width - obstacleSize),
-                    y: Math.random() * (canvas.height - obstacleSize),
-                    width: obstacleSize,
-                    height: obstacleSize,
-                    createdAt: Date.now(),
-                    type: 'dem'
-                });
-            }
-        }
-
+     function generateObstacle() {
+    if (Math.random() < 0.3125) { // 31.25% chance to generate an obstacle (5 times more often)
+        const obstacleSize = 100;
+        obstacles.push({
+            x: Math.random() * (canvas.width - obstacleSize),
+            y: Math.random() * (canvas.height - obstacleSize),
+            width: obstacleSize,
+            height: obstacleSize,
+            createdAt: Date.now(),
+            type: 'dem'
+        });
+    }
+}
         function updateGame() {
             if (gameOver) {
                 if (Date.now() - gameOverTime >= 1500) {
