@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>White House Dollar Collector Game</title>
+    <title>Barron Plays Solana</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -43,8 +43,12 @@
         #controls {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 5px;
             margin-top: 20px;
+            justify-content: center;
+            width: 160px;
+            margin-left: auto;
+            margin-right: auto;
         }
         .arrow {
             width: 50px;
@@ -100,9 +104,8 @@
     </style>
 </head>
 <body>
-    <h1>White House Dollar Collector Game</h1>
+    <h1>Barron Plays Solana</h1>
     <div class="game-container">
-        <div class="game-text">Play The Game To Your Fullest To Reveal Knowledge</div>
         <canvas id="gameCanvas" width="600" height="400"></canvas>
         <div class="game-text">Use Arrow Keys or On-Screen Buttons To Play</div>
         
@@ -158,6 +161,7 @@
         function loadAudio() {
             backgroundMusic = new Audio('1.mp3');
             backgroundMusic.loop = true;
+            backgroundMusic.play().catch(e => console.log("Audio play failed:", e));
         }
 
         function loadStoredData() {
@@ -415,22 +419,21 @@
             }
         });
 
-        // Add touch events for on-screen controls
+        // Add click events for on-screen controls
         const controls = document.getElementById('controls');
-        let touchStartTime;
+        controls.addEventListener('click', (e) => {
+            if (e.target.classList.contains('arrow')) {
+                moveGuy(e.target.id);
+            }
+        });
 
-        controls.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            touchStartTime = Date.now();
-            const direction = e.target.id;
-            moveGuy(direction);
-        }, { passive: false });
+        function startGame() {
+            loadAudio();
+            setInterval(generateDollar, 1000);
+            setInterval(generateObstacle, 3000);
+            gameLoop();
+        }
 
-        controls.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            touchStartTime = null;
-        }, { passive: false });
-
-        function handleLongPress() {
-            if (touchStartTime && Date.now() - touchStartTime > 100) {
-                const direction = document.elementFromPoint(
+        function gameLoop() {
+            updateGame();
+            requestAnimationFrame(gameLoop
