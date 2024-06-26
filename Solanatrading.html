@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solana Trader Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -54,11 +55,18 @@
             background-color: #e8e8e8;
             border-radius: 5px;
         }
+        #timer {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
     <div class="game-container">
         <h1>🌟 SOLANA TRADER PRO 🌟</h1>
+        <div id="timer">Time left: 60s</div>
         <div class="market-info">
             <div>
                 <h3>Current SOL Price:</h3>
@@ -73,6 +81,7 @@
                 <p id="holdings">0</p>
             </div>
         </div>
+        <canvas id="priceChart"></canvas>
         <button onclick="buy()">Buy SOL</button>
         <button onclick="sell()">Sell SOL</button>
         <button onclick="updateMarket()">Refresh Market</button>
@@ -86,11 +95,15 @@
         let price = 22.15;
         let balance = 10000;
         let holdings = 0;
+        let timeLeft = 60;
+        let priceHistory = [price];
+        let chart;
 
         function updateDisplay() {
             document.getElementById('price').innerText = '$' + price.toFixed(2);
             document.getElementById('balance').innerText = '$' + balance.toFixed(2);
             document.getElementById('holdings').innerText = holdings;
+            updateChart();
         }
 
         function buy() {
@@ -119,6 +132,7 @@
             let change = (Math.random() - 0.5) * 2;
             price += change;
             if (price < 1) price = 1;
+            priceHistory.push(price);
             updateDisplay();
             document.getElementById('newsContent').innerText = change > 0 ? 
                 "Solana sees a surge in demand!" : "Solana faces selling pressure.";
@@ -128,22 +142,71 @@
         function checkGameStatus() {
             let totalValue = balance + (holdings * price);
             if (totalValue < 5000) {
-                alert("Game Over! You've lost too much money.");
-                resetGame();
+                endGame("Game Over! You've lost too much money.");
             } else if (totalValue > 20000) {
-                alert("Congratulations! You've doubled your money and won the game!");
-                resetGame();
+                endGame("Congratulations! You've doubled your money and won the game!");
             }
+        }
+
+        function endGame(message) {
+            alert(message);
+            resetGame();
         }
 
         function resetGame() {
             price = 22.15;
             balance = 10000;
             holdings = 0;
+            timeLeft = 60;
+            priceHistory = [price];
             updateDisplay();
+            startTimer();
+        }
+
+        function startTimer() {
+            let timer = setInterval(function() {
+                timeLeft--;
+                document.getElementById('timer').innerText = `Time left: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endGame("Time's up! Let's see how you did.");
+                }
+            }, 1000);
+        }
+
+        function updateChart() {
+            if (chart) {
+                chart.data.labels = Array.from({length: priceHistory.length}, (_, i) => i + 1);
+                chart.data.datasets[0].data = priceHistory;
+                chart.update();
+            } else {
+                let ctx = document.getElementById('priceChart').getContext('2d');
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: Array.from({length: priceHistory.length}, (_, i) => i + 1),
+                        datasets: [{
+                            label: 'SOL Price',
+                            data: priceHistory,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: false
+                            }
+                        }
+                    }
+                });
+            }
         }
 
         updateDisplay();
+        startTimer();
+        setInterval(updateMarket, 5000);  // Auto-update market every 5 seconds
     </script>
 </body>
 </html>
