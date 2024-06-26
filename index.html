@@ -22,6 +22,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 20px;
             margin-top: 20px;
+            text-align: center;
         }
         h1 {
             color: #2c3e50;
@@ -33,6 +34,7 @@
         canvas {
             border: 1px solid #ddd;
             border-radius: 5px;
+            display: none;
         }
         .game-text {
             margin: 15px 0;
@@ -41,7 +43,7 @@
             color: #34495e;
         }
         #controls {
-            display: grid;
+            display: none;
             grid-template-columns: repeat(3, 1fr);
             gap: 5px;
             margin-top: 20px;
@@ -50,7 +52,7 @@
             margin-left: auto;
             margin-right: auto;
         }
-        .arrow {
+        .arrow, #startButton {
             width: 50px;
             height: 50px;
             font-size: 24px;
@@ -64,13 +66,19 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        .arrow:hover {
+        .arrow:hover, #startButton:hover {
             background-color: #2980b9;
         }
         #up { grid-column: 2; }
         #left { grid-column: 1; grid-row: 2; }
         #right { grid-column: 3; grid-row: 2; }
         #down { grid-column: 2; grid-row: 3; }
+        #startButton {
+            width: auto;
+            padding: 10px 20px;
+            margin: 20px auto;
+            font-size: 18px;
+        }
         #milestone-image {
             position: absolute;
             top: 50%;
@@ -106,6 +114,7 @@
 <body>
     <h1>Barron Plays Solana</h1>
     <div class="game-container">
+        <button id="startButton">Start Game</button>
         <canvas id="gameCanvas" width="600" height="400"></canvas>
         <div class="game-text">Use Arrow Keys or On-Screen Buttons To Play</div>
         
@@ -123,6 +132,7 @@
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+        const startButton = document.getElementById('startButton');
         let guy = { x: 300, y: 200, width: 60, height: 80, rotation: 0 };
         let dollars = [];
         let obstacles = [];
@@ -135,6 +145,7 @@
         let spinStartTime = 0;
         let backgroundMusic;
         let youtubePlayer;
+        let gameLoopId;
 
         // Load images
         const barronImage = new Image();
@@ -146,7 +157,7 @@
         function imageLoaded() {
             imagesLoaded++;
             if (imagesLoaded === totalImages) {
-                startGame();
+                startButton.disabled = false;
             }
         }
 
@@ -161,7 +172,6 @@
         function loadAudio() {
             backgroundMusic = new Audio('1.mp3');
             backgroundMusic.loop = true;
-            backgroundMusic.play().catch(e => console.log("Audio play failed:", e));
         }
 
         function loadStoredData() {
@@ -419,7 +429,8 @@
             }
         });
 
-        // Add click events for on-screen controls
+
+// Add click events for on-screen controls
         const controls = document.getElementById('controls');
         controls.addEventListener('click', (e) => {
             if (e.target.classList.contains('arrow')) {
@@ -428,20 +439,25 @@
         });
 
         function startGame() {
+            canvas.style.display = 'block';
+            controls.style.display = 'grid';
+            startButton.style.display = 'none';
             loadAudio();
+            backgroundMusic.play().catch(e => console.log("Audio play failed:", e));
             setInterval(generateDollar, 1000);
             setInterval(generateObstacle, 3000);
-            gameLoop();
+            gameLoopId = requestAnimationFrame(gameLoop);
         }
 
-function gameLoop() {
+        function gameLoop() {
             updateGame();
-            requestAnimationFrame(gameLoop);
+            gameLoopId = requestAnimationFrame(gameLoop);
         }
 
-        // Load data and start the game
+        // Load data and set up start button
         loadStoredData();
-        startGame();
+        startButton.addEventListener('click', startGame);
+        startButton.disabled = true; // Disable button until images are loaded
     </script>
 </body>
 </html>
