@@ -105,19 +105,12 @@
             background-color: rgba(0, 0, 0, 0.8);
             z-index: 1000;
         }
-        #video-container iframe {
+        #video-content {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            max-width: 90%;
-            max-height: 90%;
-        }
-        #fullest-text {
-            color: red;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
+            text-align: center;
         }
         #level2-link {
             display: none;
@@ -128,6 +121,12 @@
             text-decoration: none;
             border-radius: 5px;
             font-weight: bold;
+        }
+        #fullest-text {
+            color: red;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
         .footer-links {
             margin-top: 20px;
@@ -165,11 +164,12 @@
         <a href="https://t.me/YourTelegramGroup" target="_blank">Telegram</a>
     </div>
 
-    <a href="level2.html" id="level2-link">Level 2</a>
-
     <img id="milestone-image" src="" alt="Milestone Image">
     <div id="video-container">
-        <div id="youtubePlayer"></div>
+        <div id="video-content">
+            <a href="level2.html" id="level2-link">Level 2</a>
+            <div id="youtubePlayer"></div>
+        </div>
     </div>
 
     <script>
@@ -419,9 +419,6 @@
             const textWidth = textMetrics.width;
             ctx.fillText(text, (canvas.width - textWidth) / 2, canvas.height / 2);
 
-            // Show the Level 2 link
-            level2Link.style.display = 'inline-block';
-
             setTimeout(() => {
                 displayVideo();
             }, 3000);
@@ -430,14 +427,15 @@
         function displayVideo() {
             const videoContainer = document.getElementById('video-container');
             videoContainer.style.display = 'block';
+            level2Link.style.display = 'inline-block';
 
             // Load the YouTube API script
             const tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
             const firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-// This function will be called when the YouTube API is ready
+            // This function will be called when the YouTube API is ready
             window.onYouTubeIframeAPIReady = function() {
                 youtubePlayer = new YT.Player('youtubePlayer', {
                     height: '80%',
@@ -523,4 +521,3 @@
     </script>
 </body>
 </html>
-
