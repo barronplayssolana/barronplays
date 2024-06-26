@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egg Jump Rope Game</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let egg = {
+            x: 200,
+            y: 300,
+            radius: 20,
+            jumping: false
+        };
+
+        let rope = {
+            y: 340,
+            speed: 5,
+            direction: 1
+        };
+
+        let chicken = {
+            x: 400,
+            y: 100,
+            size: 60,
+            speed: 3,
+            visible: false
+        };
+
+        let score = 0;
+        let gameOver = false;
+
+        function drawEgg() {
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.ellipse(egg.x, egg.y, egg.radius, egg.radius * 1.3, 0, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        function drawRope() {
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, rope.y);
+            ctx.lineTo(400, rope.y);
+            ctx.stroke();
+        }
+
+        function drawChicken() {
+            if (chicken.visible) {
+                ctx.font = `${chicken.size}px Arial`;
+                ctx.fillText('🐔', chicken.x, chicken.y);
+            }
+        }
+
+        function drawScore() {
+            ctx.fillStyle = 'black';
+            ctx.font = '20px Arial';
+            ctx.fillText(`Score: ${score}`, 10, 30);
+        }
+
+        function update() {
+            if (gameOver) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            rope.y += rope.speed * rope.direction;
+            if (rope.y > 350 || rope.y < 250) {
+                rope.direction *= -1;
+            }
+
+            if (egg.jumping) {
+                egg.y -= 5;
+                if (egg.y <= 200) {
+                    egg.jumping = false;
+                }
+            } else if (egg.y < 300) {
+                egg.y += 5;
+            }
+
+            if (chicken.visible) {
+                chicken.x -= chicken.speed;
+                if (chicken.x < -chicken.size) {
+                    chicken.visible = false;
+                    chicken.x = 400;
+                }
+            } else if (Math.random() < 0.005) {
+                chicken.visible = true;
+            }
+
+            if (Math.abs(egg.y - rope.y) < 10 && !egg.jumping) {
+                gameOver = true;
+            }
+
+            drawEgg();
+            drawRope();
+            drawChicken();
+            drawScore();
+
+            if (gameOver) {
+                ctx.fillStyle = 'red';
+                ctx.font = '40px Arial';
+                ctx.fillText('Game Over!', 100, 200);
+                ctx.fillText('🍳', egg.x - 20, egg.y + 20);
+            } else {
+                score++;
+                requestAnimationFrame(update);
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.code === 'Space' || e.code === 'Enter') && !egg.jumping && !gameOver) {
+                egg.jumping = true;
+            }
+        });
+
+        canvas.addEventListener('click', () => {
+            if (!egg.jumping && !gameOver) {
+                egg.jumping = true;
+            }
+        });
+
+        update();
+    </script>
+</body>
+</html>
