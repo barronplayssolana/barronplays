@@ -132,7 +132,7 @@
 </head>
 <body>
     <h1>Barron Plays Solana</h1>
-    <div id="fullest-text">Play the game to the fullest</div>
+    <div id="fullest-text">Play the game to the fullest or remain forever lost</div>
     <div class="game-container">
         <button id="startButton">Start Game</button>
         <canvas id="gameCanvas" width="600" height="600"></canvas>
@@ -371,7 +371,7 @@ width: obstacleSize,
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'white';
             ctx.font = '24px Arial';
-            const text = 'GAME OVER';
+            const text = 'You became an antichrist. Game Over.';
             const textMetrics = ctx.measureText(text);
             const textWidth = textMetrics.width;
             ctx.fillText(text, (canvas.width - textWidth) / 2, canvas.height / 2);
