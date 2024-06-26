@@ -4,38 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>White House Dollar Collector Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-family: Arial, sans-serif;
-            touch-action: manipulation;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .game-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
         canvas {
-            border: 1px solid black;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
         .game-text {
-            margin: 10px 0;
-            font-size: 16px;
+            margin: 15px 0;
+            font-size: 18px;
             text-align: center;
+            color: #34495e;
         }
         #controls {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 15px;
+            gap: 10px;
+            margin-top: 20px;
         }
         .arrow {
-            width: 40px;
-            height: 40px;
-            font-size: 20px;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            user-select: none;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .arrow:hover {
+            background-color: #2980b9;
         }
         #up { grid-column: 2; }
         #left { grid-column: 1; grid-row: 2; }
@@ -47,36 +73,45 @@
             left: 50%;
             transform: translate(-50%, -50%);
             display: none;
-            width: 600px;
-            height: 400px;
-            object-fit: cover;
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         #video-container {
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+        #video-container iframe {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 600px;
-            height: 400px;
+            max-width: 90%;
+            max-height: 90%;
         }
     </style>
 </head>
 <body>
-    <audio id="backgroundMusic" loop>
-        <source src="1.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-
-    <div class="game-text">Play The Game To Your Fullest To Reveal Knowledge</div>
-    <canvas id="gameCanvas" width="600" height="400"></canvas>
-    <div class="game-text">Use Arrow Keys or On-Screen Buttons To Play</div>
-    
-    <div id="controls">
-        <div id="up" class="arrow">↑</div>
-        <div id="left" class="arrow">←</div>
-        <div id="right" class="arrow">→</div>
-        <div id="down" class="arrow">↓</div>
+    <h1>White House Dollar Collector Game</h1>
+    <div class="game-container">
+        <div class="game-text">Play The Game To Your Fullest To Reveal Knowledge</div>
+        <canvas id="gameCanvas" width="600" height="400"></canvas>
+        <div class="game-text">Use Arrow Keys or On-Screen Buttons To Play</div>
+        
+        <div id="controls">
+            <button id="up" class="arrow">↑</button>
+            <button id="left" class="arrow">←</button>
+            <button id="right" class="arrow">→</button>
+            <button id="down" class="arrow">↓</button>
+        </div>
     </div>
 
     <img id="milestone-image" src="" alt="Milestone Image">
@@ -95,7 +130,7 @@
         let milestoneDisplayed = false;
         let isSpinning = false;
         let spinStartTime = 0;
-        const backgroundMusic = document.getElementById('backgroundMusic');
+        let backgroundMusic;
         let youtubePlayer;
 
         // Load images
@@ -119,6 +154,11 @@
         barronImage.src = 'barron.png';
         autImage.src = 'aut.png';
         backgroundImage.src = 'white_house.png';
+
+        function loadAudio() {
+            backgroundMusic = new Audio('1.mp3');
+            backgroundMusic.loop = true;
+        }
 
         function loadStoredData() {
             const storedData = localStorage.getItem('gameData');
@@ -394,35 +434,3 @@
         function handleLongPress() {
             if (touchStartTime && Date.now() - touchStartTime > 100) {
                 const direction = document.elementFromPoint(
-                    event.changedTouches[0].clientX,
-                    event.changedTouches[0].clientY
-                ).id;
-                moveGuy(direction);
-                requestAnimationFrame(handleLongPress);
-            }
-        }
-
-        controls.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            handleLongPress();
-        }, { passive: false });
-
-        function startGame() {
-            backgroundMusic.play();
-            setInterval(generateDollar, 1000);
-            setInterval(generateObstacle, 3000);
-            gameLoop();
-        }
-
-        function gameLoop() {
-            updateGame();
-            requestAnimationFrame(gameLoop);
-        }
-
-        // Load data
-        loadStoredData();
-
-        // The game will start automatically when all images are loaded
-    </script>
-</body>
-</html>
