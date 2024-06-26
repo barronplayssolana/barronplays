@@ -133,6 +133,7 @@
 </head>
 <body>
     <h1>Barron Plays Solana</h1>
+    <div id="fullest-text">Play the game to the fullest</div>
     <div class="game-container">
         <button id="startButton">Start Game</button>
         <canvas id="gameCanvas" width="600" height="400"></canvas>
@@ -146,12 +147,12 @@
         </div>
     </div>
 
+    <a href="level2.html" id="level2-link">Level 2</a>
+
     <img id="milestone-image" src="" alt="Milestone Image">
     <div id="video-container">
-        <div id="fullest-text">Play the game to the fullest</div>
         <div id="youtubePlayer"></div>
     </div>
-    <a href="level2.html" id="level2-link">Level 2</a>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -400,6 +401,9 @@
             const textWidth = textMetrics.width;
             ctx.fillText(text, (canvas.width - textWidth) / 2, canvas.height / 2);
 
+            // Show the Level 2 link
+            level2Link.style.display = 'inline-block';
+
             setTimeout(() => {
                 displayVideo();
             }, 3000);
@@ -432,14 +436,12 @@
             function onPlayerReady(event) {
                 // Stop the background music when the video is ready to play
                 backgroundMusic.pause();
-                backgroundMusic.currentTime = 0;
-            }
+                backgroundMusic.currentTime = 0
+};
 
-  // This function will be called when the player's state changes
+            // This function will be called when the player's state changes
             function onPlayerStateChange(event) {
                 if (event.data == YT.PlayerState.ENDED) {
-                    // Show the Level 2 link when the video ends
-                    level2Link.style.display = 'inline-block';
                     // Optionally restart the background music when the video ends
                     backgroundMusic.play();
                 }
